@@ -7,11 +7,25 @@ class Homepage extends StatefulWidget {
   State<Homepage> createState() => _HomepageState();
 }
 
+var index = ['+', '-', '*', '/'];
+
 class _HomepageState extends State<Homepage> {
   double result = 0;
   final TextEditingController firstController = TextEditingController();
   final TextEditingController secondController = TextEditingController();
-  
+
+  void updateOperation(Function(double a, double b) operation) {
+    double a = double.parse(firstController.text);
+    double b = double.parse(secondController.text);
+    setState(() {
+      result = operation(a, b);
+    });
+  }
+
+  double add(double a, double b) => a + b;
+  double subtract(double a, double b) => a - b;
+  double multiply(double a, double b) => a * b;
+  double divide(double a, double b) => a / b;
 
   @override
   Widget build(BuildContext context) {
@@ -68,51 +82,15 @@ class _HomepageState extends State<Homepage> {
                 ),
                 Column(
                   children: [
-                    Container(
-                      width: 150,
-                      margin: EdgeInsets.all(5),
-                      color: Colors.red[700],
-                      child: ElevatedButton(
-                        onPressed: () {
-                          //code execute on button press
-                          double a = double.parse(firstController.text);
-                          double b = double.parse(secondController.text);
-
-                          setState(() {
-                            result = a + b;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red[700], // Background color
-                          foregroundColor: Colors.white, // Text color
-                        ),
-                        child: Text('Add(+)'),
-                      ),
-                    ),
+                    ArithmeticOperators(
+                        operators: () => updateOperation(add),
+                        textOperator: 'Add'),
                     SizedBox(
                       height: 10,
                     ),
-                    Container(
-                      width: 150,
-                      margin: EdgeInsets.all(5),
-                      color: Colors.red[700],
-                      child: ElevatedButton(
-                        onPressed: () {
-                          //code execute on button press
-                          double a = double.parse(firstController.text);
-                          double b = double.parse(secondController.text);
-
-                          setState(() {
-                            result = a - b;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red[700], // Background color
-                          foregroundColor: Colors.white, // Text color
-                        ),
-                        child: Text('Subtract(-)'),
-                      ),
-                    ),
+                    ArithmeticOperators(
+                        operators: () => updateOperation(subtract),
+                        textOperator: 'Subtract')
                   ],
                 ),
                 SizedBox(
@@ -120,57 +98,49 @@ class _HomepageState extends State<Homepage> {
                 ),
                 Column(
                   children: [
-                    Container(
-                      width: 150,
-                      margin: EdgeInsets.all(5),
-                      color: Colors.red[700],
-                      child: ElevatedButton(
-                        onPressed: () {
-                          //code execute on button press
-                          double a = double.parse(firstController.text);
-                          double b = double.parse(secondController.text);
-
-                          setState(() {
-                            result = a * b;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red[700], // Background color
-                          foregroundColor: Colors.white, // Text color
-                        ),
-                        child: Text('Multiply(*)'),
-                      ),
-                    ),
+                    ArithmeticOperators(
+                        operators: () => updateOperation(multiply),
+                        textOperator: 'Multiply'),
                     SizedBox(
                       height: 10,
                     ),
-                    Container(
-                      width: 150,
-                      margin: EdgeInsets.all(5),
-                      color: Colors.red[700],
-                      child: ElevatedButton(
-                        onPressed: () {
-                          //code execute on button press
-                          double a = double.parse(firstController.text);
-                          double b = double.parse(secondController.text);
-
-                          setState(() {
-                            result = a / b;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red[700], // Background color
-                          foregroundColor: Colors.white, // Text color
-                        ),
-                        child: Text('Divide(/)'),
-                      ),
-                    ),
+                    ArithmeticOperators(
+                        operators: () => updateOperation(divide),
+                        textOperator: 'Divide')
                   ],
                 ),
               ],
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ArithmeticOperators extends StatelessWidget {
+  const ArithmeticOperators({
+    super.key,
+    required this.operators,
+    required this.textOperator,
+  });
+
+  final Function operators;
+  final String textOperator;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 150,
+      margin: EdgeInsets.all(5),
+      color: Colors.red[700],
+      child: ElevatedButton(
+        onPressed: () => operators(),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.red[700], // Background color
+          foregroundColor: Colors.white, // Text color
+        ),
+        child: Text(textOperator),
       ),
     );
   }
